@@ -60,12 +60,24 @@
       return existingFPID;
     }
 
+    function ensureCRMIDCookie() {
+      var existingCRMID = getCookie("CRMID");
+      if (!existingCRMID) {
+        var newCRMID = "CRM-" + generateUUIDv4();
+        setCookie("CRMID", newCRMID, 730); // 2 years
+        return newCRMID;
+      }
+      return existingCRMID;
+    }
+
     var currentFPID = ensureFPIDCookie();
+    var currentCRMID = ensureCRMIDCookie();
 
     dataLayer.push({
       event: "page_data_ready",
       website_name: "GA Test Site",
-      fpid: currentFPID
+      fpid: currentFPID,
+      crmid: currentCRMID
     });
   </script>
 </head>
@@ -85,7 +97,8 @@
         website_name: "GA Test Site",
         link_id: linkId,
         link_name: linkName,
-        fpid: currentFPID
+        fpid: currentFPID,
+        crmid: currentCRMID
       });
 
       gtag('event', 'button_click', {
@@ -94,7 +107,8 @@
         link_id: linkId,
         link_name: linkName,
         website_name: 'GA Test Site',
-        fpid: currentFPID
+        fpid: currentFPID,
+        crmid: currentCRMID
       });
     }
   </script>
