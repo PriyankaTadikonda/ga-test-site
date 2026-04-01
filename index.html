@@ -5,25 +5,96 @@
 
   <!-- Google tag -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-MXJ3P4TLJZ"></script>
+  <script src="https://assets.adobedtm.com/161206a90d6a/debf016d6509/launch-15cfbe5185f4-development.min.js" async></script>
   <script>
     window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
 
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
     gtag('config', 'G-MXJ3P4TLJZ');
+
+    function getCookie(name) {
+      var nameEQ = name + "=";
+      var ca = document.cookie.split(";");
+      for (var i = 0; i < ca.length; i++) {
+        var c = ca[i].trim();
+        if (c.indexOf(nameEQ) === 0) {
+          return c.substring(nameEQ.length, c.length);
+        }
+      }
+      return null;
+    }
+
+    function generateUUIDv4() {
+      if (window.crypto && crypto.randomUUID) {
+        return crypto.randomUUID();
+      }
+
+      return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c) {
+        var r = Math.random() * 16 | 0;
+        var v = c === "x" ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+      });
+    }
+
+    function setCookie(name, value, days) {
+      var expires = "";
+      if (days) {
+        var date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        expires = "; expires=" + date.toUTCString();
+      }
+      document.cookie = name + "=" + encodeURIComponent(value) + expires + "; path=/; SameSite=Lax";
+    }
+
+    function ensureFPIDCookie() {
+      var existingFPID = getCookie("FPID");
+      if (!existingFPID) {
+        var newFPID = generateUUIDv4();
+        setCookie("FPID", newFPID, 730); // 2 years
+        return newFPID;
+      }
+      return existingFPID;
+    }
+
+    var currentFPID = ensureFPIDCookie();
+
+    dataLayer.push({
+      event: "page_data_ready",
+      website_name: "GA Test Site",
+      fpid: currentFPID
+    });
   </script>
 </head>
 
 <body>
   <h1>Test Site</h1>
 
-  <button onclick="trackClick()">Click Me</button>
+  <button id="test_button" onclick="trackClick()">Click Me</button>
 
   <script>
     function trackClick() {
+      var linkId = "test_button";
+      var linkName = "Click Me";
+
+      dataLayer.push({
+        event: "link_click",
+        website_name: "GA Test Site",
+        link_id: linkId,
+        link_name: linkName,
+        fpid: currentFPID
+      });
+
       gtag('event', 'button_click', {
         event_category: 'engagement',
-        event_label: 'test_button'
+        event_label: linkName,
+        link_id: linkId,
+        link_name: linkName,
+        website_name: 'GA Test Site',
+        fpid: currentFPID
       });
     }
   </script>
