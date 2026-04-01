@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>GA Test Site</title>
+</head>
+<body>
+  <h1>Test Site</h1>
+
+  <button onclick="trackClick()">Click Me</button>
+
+  <script>
+    function trackClick() {
+      gtag('event', 'button_click', {
+        event_category: 'engagement',
+        event_label: 'test_button'
+      });
+    }
+  </script>
+</body>
+</html>
