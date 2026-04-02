@@ -13,16 +13,13 @@
       dataLayer.push(arguments);
     }
 
-    gtag('js', new Date());
-    gtag('config', 'G-MXJ3P4TLJZ');
-
     function getCookie(name) {
       var nameEQ = name + "=";
       var ca = document.cookie.split(";");
       for (var i = 0; i < ca.length; i++) {
         var c = ca[i].trim();
         if (c.indexOf(nameEQ) === 0) {
-          return c.substring(nameEQ.length, c.length);
+          return decodeURIComponent(c.substring(nameEQ.length, c.length));
         }
       }
       return null;
@@ -54,7 +51,7 @@
       var existingFPID = getCookie("FPID");
       if (!existingFPID) {
         var newFPID = generateUUIDv4();
-        setCookie("FPID", newFPID, 730); // 2 years
+        setCookie("FPID", newFPID, 730);
         return newFPID;
       }
       return existingFPID;
@@ -64,7 +61,7 @@
       var existingCRMID = getCookie("CRMID");
       if (!existingCRMID) {
         var newCRMID = "CRM-" + generateUUIDv4();
-        setCookie("CRMID", newCRMID, 730); // 2 years
+        setCookie("CRMID", newCRMID, 730);
         return newCRMID;
       }
       return existingCRMID;
@@ -73,9 +70,27 @@
     var currentFPID = ensureFPIDCookie();
     var currentCRMID = ensureCRMIDCookie();
 
+    gtag('js', new Date());
+
+    gtag('config', 'G-MXJ3P4TLJZ', {
+      user_id: currentCRMID
+    });
+
+    gtag('set', 'user_properties', {
+      crm_id: currentCRMID,
+      fpid: currentFPID,
+      website_name: 'GA Test Site'
+    });
+
     dataLayer.push({
       event: "page_data_ready",
       website_name: "GA Test Site",
+      fpid: currentFPID,
+      crmid: currentCRMID
+    });
+
+    gtag('event', 'page_data_ready', {
+      website_name: 'GA Test Site',
       fpid: currentFPID,
       crmid: currentCRMID
     });
