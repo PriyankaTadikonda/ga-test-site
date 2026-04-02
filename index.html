@@ -6,6 +6,7 @@
   <!-- Google tag -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-MXJ3P4TLJZ"></script>
   <script src="https://assets.adobedtm.com/161206a90d6a/debf016d6509/launch-15cfbe5185f4-development.min.js" async></script>
+
   <script>
     window.dataLayer = window.dataLayer || [];
 
@@ -77,10 +78,22 @@
     });
 
     gtag('set', 'user_properties', {
-      crm_id: currentCRMID,
-      fpid: currentFPID,
+      crm_cookie_value: currentCRMID,
+      fpid_value: currentFPID,
       website_name: 'GA Test Site'
     });
+
+    function sendGAEvent(eventName, extraParams) {
+      var baseParams = {
+        website_name: 'GA Test Site',
+        crm_cookie_value: currentCRMID,
+        fpid_value: currentFPID,
+        crm_cookie_source: 'cookie'
+      };
+
+      var finalParams = Object.assign({}, baseParams, extraParams || {});
+      gtag('event', eventName, finalParams);
+    }
 
     dataLayer.push({
       event: "page_data_ready",
@@ -89,11 +102,7 @@
       crmid: currentCRMID
     });
 
-    gtag('event', 'page_data_ready', {
-      website_name: 'GA Test Site',
-      fpid: currentFPID,
-      crmid: currentCRMID
-    });
+    sendGAEvent('page_data_ready');
   </script>
 </head>
 
@@ -116,14 +125,11 @@
         crmid: currentCRMID
       });
 
-      gtag('event', 'button_click', {
+      sendGAEvent('button_click', {
         event_category: 'engagement',
         event_label: linkName,
         link_id: linkId,
-        link_name: linkName,
-        website_name: 'GA Test Site',
-        fpid: currentFPID,
-        crmid: currentCRMID
+        link_name: linkName
       });
     }
   </script>
