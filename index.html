@@ -8,7 +8,7 @@
   <script src="https://assets.adobedtm.com/161206a90d6a/debf016d6509/launch-15cfbe5185f4-development.min.js" async></script>
 
   <script>
-    window.dataLayer = window.dataLayer || [];
+    var dataLayer = window.dataLayer = window.dataLayer || [];
 
     function gtag() {
       dataLayer.push(arguments);
@@ -115,7 +115,7 @@
 
   <button id="test_button" onclick="trackClick()">Click Me</button>
 
-  <!-- NEW CTA -->
+  <!-- CTA -->
   <button onclick="goToPage1()">Go To Page 1</button>
 
   <script>
@@ -141,7 +141,6 @@
       });
     }
 
-    // NEW FUNCTION
     function goToPage1() {
       window.location.href = "https://page1.priya-demo.com/";
     }
