@@ -1,15 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>GA Test Site</title>
+
+  <!-- Google tag -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-MXJ3P4TLJZ"></script>
+  <script src="https://assets.adobedtm.com/161206a90d6a/debf016d6509/launch-15cfbe5185f4-development.min.js" async></script>
+
+  <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+
+    function getCookie(name) {
+      var nameEQ = name + "=";
+      var ca = document.cookie.split(";");
+      for (var i = 0; i < ca.length; i++) {
+        var c = ca[i].trim();
+        if (c.indexOf(nameEQ) === 0) {
+          return decodeURIComponent(c.substring(nameEQ.length, c.length));
+        }
+      }
+      return null;
+    }
+
+    function generateUUIDv4() {
+      if (window.crypto && crypto.randomUUID) {
+        return crypto.randomUUID();
+      }
+
+      return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c) {
+        var r = Math.random() * 16 | 0;
+        var v = c === "x" ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+      });
+    }
+
+    function setCookie(name, value, days) {
+      var expires = "";
+      if (days) {
+        var date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        expires = "; expires=" + date.toUTCString();
+      }
+      document.cookie = name + "=" + encodeURIComponent(value) + expires + "; path=/; SameSite=Lax";
+    }
+
+    function ensureFPIDCookie() {
+      var existingFPID = getCookie("FPID");
+      if (!existingFPID) {
+        var newFPID = generateUUIDv4();
+        setCookie("FPID", newFPID, 730);
+        return newFPID;
+      }
+      return existingFPID;
+    }
+
+    function ensureCRMIDCookie() {
+      var existingCRMID = getCookie("CRMID");
+      if (!existingCRMID) {
+        var newCRMID = "CRM-" + generateUUIDv4();
+        setCookie("CRMID", newCRMID, 730);
+        return newCRMID;
+      }
+      return existingCRMID;
+    }
+
+    var currentFPID = ensureFPIDCookie();
+    var currentCRMID = ensureCRMIDCookie();
+    var currentIngestionSource = "Google Analytics";
+
+    gtag('js', new Date());
+
+    gtag('config', 'G-MXJ3P4TLJZ', {
+      user_id: currentCRMID
+    });
+
+    gtag('set', 'user_properties', {
+      crm_cookie_value: currentCRMID,
+      fpid_value: currentFPID,
+      website_name: 'GA Test Site',
+      priya_ingestion_source: currentIngestionSource
+    });
+
+    function sendGAEvent(eventName, extraParams) {
+      var baseParams = {
+        website_name: 'GA Test Site',
+        crm_cookie_value: currentCRMID,
+        fpid_value: currentFPID,
+        crm_cookie_source: 'cookie',
+        priya_ingestion_source: currentIngestionSource
+      };
+
+      var finalParams = Object.assign({}, baseParams, extraParams || {});
+      gtag('event', eventName, finalParams);
+    }
+
+    dataLayer.push({
+      event: "page_data_ready",
+      website_name: "GA Test Site",
+      fpid: currentFPID,
+      crmid: currentCRMID,
+      priya_ingestion_source: currentIngestionSource
+    });
+
+    sendGAEvent('page_data_ready');
+  </script>
+</head>
+
 <body>
   <h1>Test Site</h1>
 
-  <!-- CTA Button -->
-  <button id="go_to_page1">Go To Page 1</button>
+  <button id="test_button" onclick="trackClick()">Click Me</button>
+
+  <!-- NEW CTA -->
+  <button onclick="goToPage1()">Go To Page 1</button>
 
   <script>
-    document.getElementById("go_to_page1").addEventListener("click", function () {
-      var linkId = "go_to_page1";
-      var linkName = "Go To Page 1";
+    function trackClick() {
+      var linkId = "test_button";
+      var linkName = "Click Me";
 
-      // dataLayer push
       dataLayer.push({
         event: "link_click",
         website_name: "GA Test Site",
@@ -20,18 +133,18 @@
         priya_ingestion_source: currentIngestionSource
       });
 
-      // GA event
       sendGAEvent('button_click', {
         event_category: 'engagement',
         event_label: linkName,
         link_id: linkId,
         link_name: linkName
       });
+    }
 
-      // Redirect after slight delay (ensures tracking fires)
-      setTimeout(function () {
-        window.location.href = "https://page1.priya-demo.com/";
-      }, 300);
-    });
+    // NEW FUNCTION
+    function goToPage1() {
+      window.location.href = "https://page1.priya-demo.com/";
+    }
   </script>
 </body>
+</html>
